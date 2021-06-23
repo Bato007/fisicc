@@ -1,14 +1,24 @@
 public class Regexp {
   public static void main(String[] args) {
     // Argumentos que pasan de compilacion
+    /*
     String path = args[0];
     String flag = args[1];
     String output = "";
+    */
+    // Objeto para analizar el rgx
+    RegexpFunctions rgxFunctions = new RegexpFunctions();
 
+    /*
     if (flag.compareTo("-eval") != 0) {
       output = args[2];
     }
+    */
 
+    rgxFunctions.readTxt();
+    rgxFunctions.getExpresion();
+
+    /*
     // Ahora se instancia
     try {
       String response = "";
@@ -35,6 +45,6 @@ public class Regexp {
     } catch (Exception error) {
       System.out.println("Error inesperado");
     }
-
+    */
   }
 }
