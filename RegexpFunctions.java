@@ -16,7 +16,7 @@ public class RegexpFunctions {
 					alfabeto = line.split(","); // Es el alfabeto
 				} else {
 					separateExpression(line); // Es la expresion
-					orderExpression(line); // Se ordena
+					orderExpression(line); // Se ordena la expresion
 				}
 			}
 			r.close();	
@@ -86,9 +86,10 @@ public class RegexpFunctions {
 			}
 		}
 
+		expression = "";
 		// Se termina agregando el final de la expresion
 		for (int i=0; i<split_expression.size(); i++) {
-			expression = split_expression.get(i);
+			expression += split_expression.get(i);
 		}
 
 		if (split_expression.size() != 0) {
@@ -167,11 +168,13 @@ public class RegexpFunctions {
 
 	// Get de la expresion
 	public ArrayList<Expression> getExpresion() {
-      // for (int i=0; i<splitExpression.size(); i++) {
-      // System.out.println(splitExpression.get(i).getValue() + " " +
-      // splitExpression.get(i).getChildenPos() + " " +
-      // splitExpression.get(i).getRecursive());
-      // }
-		return splitExpression;
+		/*
+    	for (int i=0; i<splitExpression.size(); i++) {
+    		System.out.println(splitExpression.get(i).getValue() + " " +
+    		splitExpression.get(i).getChildenPos() + " " +
+    		splitExpression.get(i).getRecursive());
+    	}
+    	*/
+    	return splitExpression;
 	}
 }
