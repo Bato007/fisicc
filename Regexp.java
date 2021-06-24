@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Regexp {
   public static void main(String[] args) {
     // Argumentos que pasan de compilacion
@@ -8,6 +10,7 @@ public class Regexp {
     */
     // Objeto para analizar el rgx
     RegexpFunctions rgxFunctions = new RegexpFunctions();
+    Graph grafo;
 
     /*
     if (flag.compareTo("-eval") != 0) {
@@ -16,7 +19,10 @@ public class Regexp {
     */
 
     rgxFunctions.readTxt();
-    rgxFunctions.getExpresion();
+    ArrayList<Expression> list = rgxFunctions.getExpresion();
+    String[] alphabet = rgxFunctions.getAlfabeto();
+    grafo = new Graph(list, alphabet);
+    grafo.relate();
 
     /*
     // Ahora se instancia

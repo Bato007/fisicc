@@ -167,9 +167,11 @@ public class RegexpFunctions {
 
 	// Get de la expresion
 	public ArrayList<Expression> getExpresion() {
-		for (int i=0; i<splitExpression.size(); i++) {
-			System.out.println(splitExpression.get(i).getValue() + " " + splitExpression.get(i).getChildenPos() + " " + splitExpression.get(i).getRecursive());
-		}
+      // for (int i=0; i<splitExpression.size(); i++) {
+      // System.out.println(splitExpression.get(i).getValue() + " " +
+      // splitExpression.get(i).getChildenPos() + " " +
+      // splitExpression.get(i).getRecursive());
+      // }
 		return splitExpression;
 	}
 }
