@@ -8,7 +8,10 @@ public class Edge {
   }
 
   public void makeRecursive() {
-    this.value = " " + this.value;
+    String temp = String.valueOf(value.charAt(0));
+    if (!temp.equals(" ")) {
+      this.value = " " + this.value;
+    }
   }
 
   public Node getFinish() {
