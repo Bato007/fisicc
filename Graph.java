@@ -46,7 +46,7 @@ public class Graph {
     int temp = 0, startIn = 0, tempState = 0, index, tempAux;
     String item, value, aux;
     Edge tempEdge;
-    boolean containsAlp, nextAllow = false, first = true;
+    boolean containsAlp, nextAllow = false, first = true, canContinue = false;
 
     // -------------------------------------------------------------------
     // Se obtienen las del inicio
@@ -128,6 +128,9 @@ public class Graph {
 
         for (int k = 0; k < noOrs.length; k++) { // ['ab', 'b']
           aux = noOrs[k];
+          if (aux.length() == 1) {
+            canContinue = true;
+          }
 
           for (int h = 0; h < aux.length(); h++) { // 'ab'
             item = String.valueOf(aux.charAt(h)); // 'a'
@@ -173,20 +176,17 @@ public class Graph {
           nextAllow = false;
           first = true;
 
+
         }
 
         if (stateCount.get(startIn) == states.get(i).state) {
           startIn++;
         }
 
-        if (noOrs[tempAux].indexOf("*") != -1) {
-          System.out.println(i);
-          continue;
-        }
-
-        if (!isRecursive) {
+        if (!canContinue && !isRecursive) {
           break;
         }
+        canContinue = false;
       }
     }
 
@@ -225,7 +225,6 @@ public class Graph {
     aux2.addEdge(new Edge(aux3, "a"));
     aux2.addEdge(new Edge(aux4, "b"));
 
-    aux3.addEdge(new Edge(aux3, "a"));
     aux3.addEdge(new Edge(aux6, "#"));
     aux3.makeEnd();
 
