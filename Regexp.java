@@ -24,6 +24,8 @@ public class Regexp {
     grafo = new Graph(list, alphabet);
     grafo.relate();
 
+
+    AFD afd = new AFD(grafo.getRelations());
     /*
     // Ahora se instancia
     try {
