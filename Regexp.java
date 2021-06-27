@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Regexp {
   public static void main(String[] args) {
@@ -21,11 +22,12 @@ public class Regexp {
     rgxFunctions.readTxt();
     ArrayList<Expression> list = rgxFunctions.getExpresion();
     String[] alphabet = rgxFunctions.getAlfabeto();
+
     grafo = new Graph(list, alphabet);
     // grafo.relate();
 
 
-    AFD afd = new AFD(grafo.getRelations());
+    AFD afd = new AFD(list, alphabet, grafo.getRelations());
     /*
     // Ahora se instancia
     try {

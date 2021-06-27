@@ -4,7 +4,7 @@ import java.io.*;
 public class RegexpFunctions {
 	private String[] alfabeto;
 	private ArrayList<Expression> splitExpression = new ArrayList<Expression>();
-
+	
 	// Se lee el txt .rgx
 	public void readTxt() {
 		try {
@@ -13,7 +13,8 @@ public class RegexpFunctions {
 				String line = r.nextLine(); // Mientras hayan lineas por leer se meten a la variable line
 
 				if (line.contains(",")) { // Si la linea contiene una coma
-					alfabeto = line.split(","); // Es el alfabeto
+					// Es el alfabeto
+					alfabeto = line.split(","); 
 				} else {
 					separateExpression(line); // Es la expresion
 					orderExpression(line); // Se ordena la expresion
