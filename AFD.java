@@ -5,19 +5,19 @@ import java.io.IOException;
 
 public class AFD {
 	// Tabla Pos, followPos
-	HashMap<Integer, ArrayList<Integer>> matrix = new HashMap<Integer, ArrayList<Integer>>();
+	private HashMap<Integer, ArrayList<Integer>> matrix = new HashMap<Integer, ArrayList<Integer>>();
 	// AFD
-	HashMap<String, ArrayList<String>> finalADF = new HashMap<String, ArrayList<String>>();
+	private HashMap<String, ArrayList<String>> finalADF = new HashMap<String, ArrayList<String>>();
 	// Expression
-	ArrayList<Expression> expressions;
-	String[] alphabet;
-	HashMap<Integer, String> expressionPositions = new HashMap<Integer, String>();
+	private ArrayList<Expression> expressions;
+	private String[] alphabet;
+	private HashMap<Integer, String> expressionPositions = new HashMap<Integer, String>();
 	// Estados
-	HashMap<String, ArrayList<Integer>> finalStates = new HashMap<String, ArrayList<Integer>>();
+	private HashMap<String, ArrayList<Integer>> finalStates = new HashMap<String, ArrayList<Integer>>();
 	// Letra
-	ArrayList<String> letrasActuales = new ArrayList<String>();
-	int letter = 0;
-	int iteracion = 0;
+	private ArrayList<String> letrasActuales = new ArrayList<String>();
+	private int letter = 0;
+	private int iteracion = 0;
 
 	// Se crea la tabla segun el grafo
 	public AFD(ArrayList<Expression> list, String[] alphabet, ArrayList<Node> grafo, String nombreTxt) {
@@ -267,5 +267,14 @@ public class AFD {
 		} catch (IOException e) {
       		e.printStackTrace(); // Por si hay error
     	}
+	}
+
+	// GETTERS
+	public HashMap<String, ArrayList<String>> getFinalAFD() {
+		return finalADF;
+	}
+
+	public HashMap<String, ArrayList<Integer>> getFinalStates() {
+		return finalStates;
 	}
 }
