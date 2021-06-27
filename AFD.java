@@ -38,7 +38,7 @@ public class AFD {
 
 	// Colocamos los indices de la expresion
 	private void getIndexes() {
-		int pos = 0;
+		int pos = 1;
 		// Se crea el diccionario de las posiciones de la expresion
 		// Ej (a+b)*(a+bb) -> {0=a, 1=b, 2=a, 3=b, 4=b, 5=#}
 		for (Expression exp : expressions) {
@@ -70,35 +70,26 @@ public class AFD {
 			}
 
 			// Revisamos letra por transicion para crear nuevos conjuntos
-			for (ArrayList<Integer> estadosPorConjunto : finalStates.values()) { // EJ. [1, 2, 3, 4]
-				// Evaluamos cada letra del abecedario
-				for (Integer letraAbc : expressionPositions.keySet()) {
-					ArrayList<Integer> temp = new ArrayList<Integer>(); // Temporal
-					// Revisamos cada transicion dentro de los estados
-					for (int i=0; i<estadosPorConjunto.size(); i++) { 
-						// Revisamos por cada posicion de la expresion si es la letra buscada			
-						if (letraAbc == estadosPorConjunto.get(i)) {
-							// Se manda a llamar de la matriz y se agrega al array temporal
-							// temp.add(expressionPositions.get(posExpression));;
-							System.out.println(matrix.get(letraAbc));
+			for (ArrayList<Integer> estadosPorConjunto : finalStates.values()) { // EJ. [1, 2, 3, 4];
+				// Evaluamos cada letra del abecedario EJ. a
+				for (String letraAbc : alphabet) {
+					ArrayList<Integer> temp = new ArrayList<Integer>(); // Arraylist temporal
+					// Revisamos por cada posicion de la expresion si es la letra buscada  EJ. 1 = A, 3 = A
+					for (Integer estado : estadosPorConjunto) { // EJ. 1, 2, 3, 4
+						if (expressionPositions.get(estado).equals(letraAbc)) { // EJ. a = a
+							// Se manda a llamar la lista del estado en la matriz EJ. 1=[1, 2, 3, 4] 3=[6]
+							for (Integer estadoActual : matrix.get(estado)) {
+								temp.add(estadoActual); // EJ. 1, 2, 3, 4, 6
+							}
 						}
 					}
-
-
 
 					// Se eliminan posibles estados duplicados
 					Set<Integer> tempStates = new HashSet<>(temp);
 					temp.clear();
 					temp.addAll(tempStates);
+					System.out.println(temp);
 				}
-					/*
-					// Se compara si el temporal es identico a algun conjunto anterior
-					for (ArrayList<Integer> estadosPorConjunto : finalStates.values()) {
-						if (estadosPorConjunto.equals(temp)) { // Si ya existe
-
-						}
-					}
-					*/
 			}
 
 			break;
