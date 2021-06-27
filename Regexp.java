@@ -24,7 +24,7 @@ public class Regexp {
     String[] alphabet = rgxFunctions.getAlfabeto();
 
     grafo = new Graph(list, alphabet);
-    // grafo.relate();
+    grafo.relate();
 
 
     AFD afd = new AFD(list, alphabet, grafo.getRelations());
