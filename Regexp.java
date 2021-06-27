@@ -27,7 +27,7 @@ public class Regexp {
     grafo.relate();
 
 
-    AFD afd = new AFD(list, alphabet, grafo.getRelations());
+    AFD afd = new AFD(list, alphabet, grafo.getRelations(), "prueba.txt");
     /*
     // Ahora se instancia
     try {
