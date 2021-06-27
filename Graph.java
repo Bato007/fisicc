@@ -18,9 +18,8 @@ public class Graph {
     this.expressions = list;
     this.alphabet = glos;
 
+    stateCount.put(0, 0);
     // Se obtiene el numero de estados que se tendran
-    states.add(new Node(numbStates));
-    this.numbStates++;
     for (int j = 0; j < expressions.size(); j++) {
       Expression expression = expressions.get(j);
       String value = expression.getValue();
@@ -29,191 +28,105 @@ public class Graph {
         contains = Arrays.stream(alphabet).anyMatch(item::equals);
 
         if (contains) {
-          states.add(new Node(numbStates));
           this.numbStates++;
+          states.add(new Node(numbStates));
           count++;
         }
       }
-      stateCount.put(j, count);
+      stateCount.put(j + 1, count);
     }
-    states.add(new Node(numbStates));
+
     this.numbStates++;
+    states.add(new Node(numbStates));
   }
 
   // Se encarga en construir la lista encadenada
   public void relate() {
     // Variables a utilizar
-    int temp = 0, startIn = 0, tempState = 0, index, tempAux;
-    String item, value, aux;
+    int startIn = 0, tempState = 0;
+    String caracter, value, aux;
+    Node tempNode;
     Edge tempEdge;
-    boolean containsAlp, nextAllow = false, first = true, canContinue = false;
-
-    // -------------------------------------------------------------------
-    // Se obtienen las del inicio
-    for (int i = 0; i < expressions.size(); i++) {
-      Expression expression = expressions.get(i);
-      String data = expression.getValue();
-      boolean isRecursive = expression.getRecursive();
-
-      // Se separa para ver cuantos ors hay ['aa', 'b']
-      String[] noOrs = data.split("\\+");
-      for (String x : noOrs) {
-        for (int j = 0; j < x.length(); j++) { // 'aa'
-          item = String.valueOf(x.charAt(j)); // 'a'
-          containsAlp = Arrays.stream(alphabet).anyMatch(item::equals);
-
-          // Verificando si es un estado
-          if (containsAlp) {
-            temp++;
-          }
-
-          // Verificando si se agrega o no
-          if (first) {
-            if (isRecursive) { // Aqui se coloca lambda con su valor
-              value = " " + item;
-            } else {
-              value = item;
-            }
-
-            tempEdge = new Edge(states.get(temp), value);
-            states.get(0).addEdge(tempEdge);
-            first = false;
-          }
-
-          // El anterior era un * agregando el estado
-          if (nextAllow) {
-            tempEdge = new Edge(states.get(temp), item);
-            states.get(0).addEdge(tempEdge);
-            nextAllow = false;
-          }
-
-          // El item es * puede pasar al siguiente estado o quedarse
-          if (item.equals("*")) {
-            states.get(0).addRecursiveLast();
-            nextAllow = true;
-          }
-
-        }
-        nextAllow = false;
-        first = true;
-      }
-
-      // Tengo que verificar si es recursivo y si no ya no pasa
-      if (!isRecursive) {
-        break;
-      }
-    }
+    boolean accepted, isFirst = true, canAdd = false;
 
     // Se para el resto de estanos menos el final
-    nextAllow = false;
-    first = true;
     expressions.add(new Expression("#", 0));
 
-    // ------------------------------------------------------------------
-    for (int i = 1; i < numbStates - 1; i++) { // Los estados
-      index = startIn - 1;
-      index = (index < 0) ? 0 : index;
-      tempState = stateCount.get(index) * startIn;
-      if (tempState < 0) {
-        tempState = 0;
-      }
-      tempAux = 0;
+    for (int i = 0; i < numbStates - 1; i++) { // --------------------- NODES
+      tempNode = states.get(i);
+      tempState = 0;
+      System.out.println(i);
 
       // Las expresiones del array y en donde se hace toda la magia
-      for (int j = startIn; j < expressions.size(); j++) {
+      for (int j = startIn; j < expressions.size(); j++) { // ------- EXPRESION
+        System.out.println(stateCount.get(j));
         Expression expression = expressions.get(j);
         String data = expression.getValue();
         boolean isRecursive = expression.getRecursive();
         String[] noOrs = data.split("\\+");
 
-        for (int k = 0; k < noOrs.length; k++) { // ['ab', 'b']
+        // ['ab', 'b']
+        for (int k = 0; k < noOrs.length; k++) { // --------------- SEPARADO
           aux = noOrs[k];
-          if (aux.length() == 1) {
-            canContinue = true;
-          }
 
-          for (int h = 0; h < aux.length(); h++) { // 'ab'
-            item = String.valueOf(aux.charAt(h)); // 'a'
-            containsAlp = Arrays.stream(alphabet).anyMatch(item::equals);
+          // 'ab'
+          for (int h = 0; h < aux.length(); h++) { // ------------ CARACTERES
+            caracter = String.valueOf(aux.charAt(h)); // 'a'
+            accepted = Arrays.stream(alphabet).anyMatch(caracter::equals);
 
             // Verificando si es un estado
-            if (containsAlp) {
+            if (accepted) {
               tempState++;
             }
 
-            if (!isRecursive && (tempState < states.get(i).getState())) {
-              continue;
+            // Deja agregar
+            if (isFirst) {
+
+              // Si es el estado final se le coloca de uan
+              if (caracter.equals("#")) {
+                tempEdge = new Edge(states.get(numbStates - 1), caracter);
+                tempNode.makeEnd();
+                tempNode.addEdge(tempEdge);
+                break;
+              }
+
+              canAdd = true;
             }
 
             // Verificando si se agrega o no
-            if (first) {
-              tempEdge = new Edge(states.get(tempState), item);
-              states.get(i).addEdge(tempEdge);
-              first = false;
+            if (canAdd) {
+              tempEdge = new Edge(states.get(tempState - 1), caracter);
+              tempNode.addEdge(tempEdge);
+              canAdd = false;
             }
 
-            // El anterior era un * agregando el estado
-            if (nextAllow) {
-              tempEdge = new Edge(states.get(tempState), item);
-              states.get(0).addEdge(tempEdge);
-              nextAllow = false;
-            }
+          } // --------------------------------------- CARACTERES
 
-            // El item es * puede pasar al siguiente estado o quedarse
-            if (item.equals("*")) {
-              System.out.println(i);
-              states.get(i).addRecursiveLast();
-              nextAllow = true;
-            }
+          isFirst = true;
 
-            if (item.equals("#")) {
-              tempEdge = new Edge(states.get(numbStates - 1), item);
-              states.get(i).addEdge(tempEdge);
-              states.get(i).makeEnd();
-            }
+        } // ---------------------------------------------SEPARADO
 
-          }
-          nextAllow = false;
-          first = true;
+      } // ------------------------------------------------- EXPRESION
 
-
-        }
-
-        if (stateCount.get(startIn) == states.get(i).state) {
-          startIn++;
-        }
-
-        if (!canContinue && !isRecursive) {
-          break;
-        }
-        canContinue = false;
-      }
-    }
+    } // ---------------------------------------------------------- NODES
 
     for (Node node : states) {
-      System.out.println(node.getState());
+      System.out.println("-----------" + node.getState());
       for (Edge edge : node.getEdges()) {
         System.out.print(edge.value);
-        System.out.print(" |" + edge.finish.state + "|");
+        System.out.println(" -> " + edge.finish.state + "");
       }
-      System.out.println();
     }
   }
 
   public ArrayList<Node> getRelations() {
     ArrayList<Node> temp = new ArrayList<>();
-    Node aux0 = new Node(0);
     Node aux1 = new Node(1);
     Node aux2 = new Node(2);
     Node aux3 = new Node(3);
     Node aux4 = new Node(4);
     Node aux5 = new Node(5);
     Node aux6 = new Node(6);
-
-    aux0.addEdge(new Edge(aux1, " a"));
-    aux0.addEdge(new Edge(aux2, " b"));
-    aux0.addEdge(new Edge(aux3, " a"));
-    aux0.addEdge(new Edge(aux4, "b"));
 
     aux1.addEdge(new Edge(aux1, "a"));
     aux1.addEdge(new Edge(aux2, "b"));
@@ -232,7 +145,6 @@ public class Graph {
     aux5.addEdge(new Edge(aux6, "#"));
     aux5.makeEnd();
 
-    temp.add(aux0);
     temp.add(aux1);
     temp.add(aux2);
     temp.add(aux3);

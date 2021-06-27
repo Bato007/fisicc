@@ -22,7 +22,7 @@ public class Regexp {
     ArrayList<Expression> list = rgxFunctions.getExpresion();
     String[] alphabet = rgxFunctions.getAlfabeto();
     grafo = new Graph(list, alphabet);
-    // grafo.relate();
+    grafo.relate();
 
     /*
     // Ahora se instancia
