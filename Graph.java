@@ -43,23 +43,22 @@ public class Graph {
   // Se encarga en construir la lista encadenada
   public void relate() {
     // Variables a utilizar
-    int startIn = 0, tempState = 0;
-    String caracter, value, aux;
+    int startIn = 0, tempState = 0, passed;
+    String caracter, aux, tempCaracter;
     Node tempNode;
     Edge tempEdge;
-    boolean accepted, isFirst = true, canAdd = false;
+    boolean accepted, isFirst = true, canAdd = false, canContinue = false;
 
     // Se para el resto de estanos menos el final
     expressions.add(new Expression("#", 0));
 
     for (int i = 0; i < numbStates - 1; i++) { // --------------------- NODES
       tempNode = states.get(i);
-      tempState = 0;
-      System.out.println(i);
+      tempState = stateCount.get(startIn);
+      passed = 0;
 
       // Las expresiones del array y en donde se hace toda la magia
       for (int j = startIn; j < expressions.size(); j++) { // ------- EXPRESION
-        System.out.println(stateCount.get(j));
         Expression expression = expressions.get(j);
         String data = expression.getValue();
         boolean isRecursive = expression.getRecursive();
@@ -79,9 +78,32 @@ public class Graph {
               tempState++;
             }
 
+            // Se verifica si no puede ir al anterior
+            if (!isRecursive) {
+              if (tempState < tempNode.getState()) {
+                continue;
+              } else if (passed < 1) { // Cuando son locales
+                if (noOrs[k].length() == 1 || (isFirst && (h == (aux.length() - 1)))) {
+                  canContinue = true;
+                  break;
+                } else {
+                  // Se mira si el siguiente es * o una letra
+                  tempCaracter = String.valueOf(aux.charAt(h + 1));
+                  if (!tempCaracter.equals("*")) {
+                    tempEdge = new Edge(states.get(tempState), tempCaracter);
+                    tempNode.addEdge(tempEdge);
+                    break;
+                  }
+                }
+              } else if (passed >= 1) { // Si no es local
+                if (noOrs[k].length() == 1) {
+                  canContinue = false;
+                }
+              }
+            }
+
             // Deja agregar
             if (isFirst) {
-
               // Si es el estado final se le coloca de uan
               if (caracter.equals("#")) {
                 tempEdge = new Edge(states.get(numbStates - 1), caracter);
@@ -90,7 +112,17 @@ public class Graph {
                 break;
               }
 
+              isFirst = false;
               canAdd = true;
+            } else {
+              // Se verifica si puede continuar
+              if (caracter.equals("*")) {
+                canAdd = true;
+                continue;
+              } else {
+                canAdd = false;
+              }
+
             }
 
             // Verificando si se agrega o no
@@ -103,10 +135,22 @@ public class Graph {
           } // --------------------------------------- CARACTERES
 
           isFirst = true;
+          if (canContinue) {
+            break;
+          }
 
         } // ---------------------------------------------SEPARADO
 
+        passed++;
+        if (!canContinue && !isRecursive) {
+          break;
+        }
+        canContinue = false;
+
       } // ------------------------------------------------- EXPRESION
+
+      if (tempNode.getState() == stateCount.get(startIn + 1))
+        startIn++;
 
     } // ---------------------------------------------------------- NODES
 
@@ -120,39 +164,7 @@ public class Graph {
   }
 
   public ArrayList<Node> getRelations() {
-    ArrayList<Node> temp = new ArrayList<>();
-    Node aux1 = new Node(1);
-    Node aux2 = new Node(2);
-    Node aux3 = new Node(3);
-    Node aux4 = new Node(4);
-    Node aux5 = new Node(5);
-    Node aux6 = new Node(6);
-
-    aux1.addEdge(new Edge(aux1, "a"));
-    aux1.addEdge(new Edge(aux2, "b"));
-    aux1.addEdge(new Edge(aux3, "a"));
-    aux1.addEdge(new Edge(aux4, "b"));
-
-    aux2.addEdge(new Edge(aux1, "a"));
-    aux2.addEdge(new Edge(aux2, "b"));
-    aux2.addEdge(new Edge(aux3, "a"));
-    aux2.addEdge(new Edge(aux4, "b"));
-
-    aux3.addEdge(new Edge(aux6, "#"));
-    aux3.makeEnd();
-
-    aux4.addEdge(new Edge(aux5, "b"));
-    aux5.addEdge(new Edge(aux6, "#"));
-    aux5.makeEnd();
-
-    temp.add(aux1);
-    temp.add(aux2);
-    temp.add(aux3);
-    temp.add(aux4);
-    temp.add(aux5);
-    temp.add(aux6);
-
-    return temp;
+    return states;
   }
 
 }
