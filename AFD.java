@@ -64,7 +64,6 @@ public class AFD {
 
 	// Creamos los conjuntos
 	private void analizeMatrix() {
-
 		// Se crean los conjuntos
 		letter = 1;
 		while (true) {
@@ -95,30 +94,30 @@ public class AFD {
 	}
 
 	// Obtener todos los paths
-	private Boolean recursivePath(ArrayList<ArrayList<Integer>> actual) {
-		int iteracionTemporal = iteracion-1;
+	private void recursivePath(ArrayList<ArrayList<Integer>> actual) {
+		int iteracionTemporal = 0;
+		ArrayList<String> letrasIteradas = new ArrayList<String>();
 		ArrayList<ArrayList<Integer>> tempRecursive = new ArrayList<ArrayList<Integer>>();
-		// int iteracion = 1;
-		// Ya no volvemos a probar los pasados
 		
-		for (String nombreConjunto : finalStates.keySet()) {
-			if (iteracionTemporal < actual.size()) {
-				String letra = String.valueOf((char)(iteracionTemporal + 64));
-				// EJ. A en la 1era iteracion, A, B, C en la segunda, etc
-				if (!nombreConjunto.equals(letra)) {
-					tempRecursive.add(finalStates.get(nombreConjunto));
-				}
-				
-				iteracionTemporal+=1;
-			}
+		// Obtenemos todas las letras hasta la actualidad
+		while (iteracionTemporal < iteracion) {
+			String letra = String.valueOf((char)(iteracionTemporal + 1 + 64));
+			letrasIteradas.add(letra);
+			iteracionTemporal+=1;
 		}
 
-		if (tempRecursive.size() == 0) {
-			return false;
-		} else {
+		// Revisamos si la letra ya ha sido testeada
+		for (String nombreConjunto : finalStates.keySet()) {	
+			// EJ. A en la 1era iteracion, A, B, C en la segunda, etc
+			if (!letrasIteradas.contains(nombreConjunto)) {
+				tempRecursive.add(finalStates.get(nombreConjunto));
+			}
+		}
+		
+		// Se realiza recursividad hasta que ya no queden letras nuevas
+		if (tempRecursive.size() != 0) {
 			actual = actualPath(tempRecursive);
 			recursivePath(actual);
-			return true;
 		}
 	}
 
@@ -244,10 +243,11 @@ public class AFD {
 			for (String finales : finalStates.keySet()) {
 				// El numero del estado final es el tamano de la matriz + 1
 				if (finalStates.get(finales).contains(matrix.size())) {
-					estadoFinal += finales;
+					int pos =  (int)finales.charAt(0)-64;
+					estadoFinal += pos + ",";
 				}
 			}
-
+			estadoFinal = estadoFinal.substring(0, estadoFinal.length() - 1); // Remuevo ultima coma
 			myWriter.write(estadoFinal); // Estado final
 
 			// Escribimos las transiciones
@@ -276,5 +276,9 @@ public class AFD {
 
 	public HashMap<String, ArrayList<Integer>> getFinalStates() {
 		return finalStates;
+	}
+
+	public HashMap<Integer, ArrayList<Integer>> getMatrix() {
+		return matrix;
 	}
 }

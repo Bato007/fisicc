@@ -28,7 +28,7 @@ public class Regexp {
 
 
     AFD afd = new AFD(list, alphabet, grafo.getRelations(), "prueba.txt");
-    AFDmin afdMin = new AFDmin(afd.getFinalAFD(), afd.getFinalStates());
+    AFDmin afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(), afd.getMatrix());
     /*
     // Ahora se instancia
     try {
