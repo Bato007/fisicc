@@ -19,31 +19,13 @@ public class RegexpFunctions {
 				} else {
 					separateExpression(line); // Es la expresion
 					orderExpression(line); // Se ordena la expresion
+					break;
 				}
 			}
 			r.close();	
 		} catch (Exception e) { // Se muestra la razon de error por la que no se encuentra el doc
 			e.printStackTrace();
 		}
-	}
-
-	// Para mantener consistencia en el programa, se pasan de numeros a letras
-	// EJ. 0 -> a
-	private String converseExpression(String expression) {
-		String regex = "[0-9]+";
-		String expresionTemporal = "";
-
-		for (char ch : expression.toCharArray()) {
-			if (Character.toString(ch).matches(regex)) {
-				int num = Character.getNumericValue(ch)+1;
-				String letraActual = String.valueOf((char)(num + 64)); 
-				expresionTemporal += letraActual.toLowerCase();
-			} else {
-				expresionTemporal += Character.toString(ch);
-			}
-		}
-
-		return expresionTemporal;
 	}
 
 	/**
@@ -64,7 +46,6 @@ public class RegexpFunctions {
 				for (int j=i; j<split_expression.size(); j++) {
 					if (split_expression.get(j).equals(")")) { // Se encuentra el primero cerrado
 						actualCloseParenthesis = j;
-						childrenPos += 1;
 
 						//Se toma en cuenta si tiene un operador * luego del parentesis
 						try {
@@ -75,26 +56,41 @@ public class RegexpFunctions {
 
 						// Se obtiene la expresion dentro de los parentesis
 						String completeParenthesis = "";
+
+
+						//Se toma en cuenta si tiene un operador + antes del parentesis
+						try {
+							if (split_expression.get(i-1).equals("+")) {
+								completeParenthesis += "+";
+							}
+						} catch (Exception e){}
+
 						for (int k=actualOpenParenthesis; k<=actualCloseParenthesis; k++) {
 							completeParenthesis += split_expression.get(k);
 						}
 
+
 						// Creo un objeto tipo Expression
-						try {
-							// Si hay un * luego del parentesis
-							if (split_expression.get(j+1).equals("*")) {
-								// Significa que la expresion tiene al menos un elemento adentro
-								splitExpression.add(new Expression(completeParenthesis, childrenPos));
-								childrenPos = 0;
-							} else {
+						//System.out.println("Entra con " + completeParenthesis + " y child " + childrenPos);
+						if (!completeParenthesis.equals("()") && !completeParenthesis.equals("(++++)")) {
+							try {
+								// Si hay un * luego del parentesis
+								if (split_expression.get(j+1).equals("*") || split_expression.get(j+1).equals(")")) {
+									// Significa que la expresion tiene al menos un elemento adentro
+									splitExpression.add(new Expression(completeParenthesis, childrenPos));
+									childrenPos = 0;
+								} else {
+									// De lo contrario es 0
+									splitExpression.add(new Expression(completeParenthesis, 0));
+								}
+							} catch (Exception e) {
 								// De lo contrario es 0
 								splitExpression.add(new Expression(completeParenthesis, 0));
+								childrenPos = 0;
 							}
-						} catch (Exception e) {
-							// De lo contrario es 0
-							splitExpression.add(new Expression(completeParenthesis, 0));
-							childrenPos = 0;
 						}
+
+						childrenPos += 1;
 
 						// Se elimina de manera inversa
 						for (int k=actualCloseParenthesis; actualOpenParenthesis<=k; k--) {
@@ -104,12 +100,17 @@ public class RegexpFunctions {
 						break;
 					}
 				}
+
+
 			}
 		}
 
 		// Se termina agregando el final de la expresion
 		for (String expresionFija : split_expression) {
-			splitExpression.add(new Expression(expresionFija, 0));
+			if (!expresionFija.equals("") && !expresionFija.equals("+") &&
+				!expresionFija.equals("(") && !expresionFija.equals(")")) {
+				splitExpression.add(new Expression(expresionFija, 0));
+			}
 		}
 	}
 
@@ -121,25 +122,35 @@ public class RegexpFunctions {
 
 		// Se pasa elemento por elemento
 		for (int i=0; i<splitExpression.size(); i++) {
+			String expresionActual = splitExpression.get(i).getValue();
+			String firstChar = String.valueOf(splitExpression.get(i).getValue().charAt(0));
+
+			if (firstChar.equals("+")) {
+				expresionActual = expresionActual.substring(1);
+			} else {
+				firstChar = "";
+			}
+
+
 			if (splitExpression.get(i).getRecursive()) {		
 				// Se busca el comienzo y final de la expresion buscada si es recursiva
-				startExpression = expression.indexOf("("+splitExpression.get(i).getValue()+")*");
-				finalExpression = startExpression+3+splitExpression.get(i).getValue().length();	
+				startExpression = expression.indexOf(firstChar+"("+expresionActual+")*");
+				finalExpression = startExpression+3+expresionActual.length()+firstChar.length();	
 			} else {	
 				// Se busca el comienzo y final de la expresion buscada sin recursividad
-				startExpression = expression.indexOf("("+splitExpression.get(i).getValue()+")");
-				finalExpression = startExpression+2+splitExpression.get(i).getValue().length();	
+				startExpression = expression.indexOf(firstChar+"("+expresionActual+")");
+				finalExpression = startExpression+2+expresionActual.length()+firstChar.length();	
 			}
 
 			if (startExpression == -1) {
 				// Se busca el comienzo y final de la expresion buscada si no ha sido encontrada
-				startExpression = expression.indexOf(splitExpression.get(i).getValue()+")*");
-				finalExpression = startExpression+2+splitExpression.get(i).getValue().length();
+				startExpression = expression.indexOf(firstChar+expresionActual+")*");
+				finalExpression = startExpression+2+expresionActual.length()+firstChar.length();
 
 				if (startExpression == -1) {
 					// Se busca el comienzo y final de la expresion buscada si no ha sido encontrada
-					startExpression = expression.indexOf(splitExpression.get(i).getValue());
-					finalExpression = startExpression+splitExpression.get(i).getValue().length();
+					startExpression = expression.indexOf(firstChar+expresionActual);
+					finalExpression = startExpression+expresionActual.length()+firstChar.length();
 				}
 			}
 
@@ -184,12 +195,12 @@ public class RegexpFunctions {
 
 	// Get de la expresion
 	public ArrayList<Expression> getExpresion() {
-		/*
+		
     	for (int i=0; i<splitExpression.size(); i++) {
     		System.out.println(splitExpression.get(i).getValue() + " " +
     		splitExpression.get(i).getChildenPos() + " " +
     		splitExpression.get(i).getRecursive());
-    	}*/
+    	}
     	
     	return splitExpression;
 	}

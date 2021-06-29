@@ -20,7 +20,6 @@ public class Expression {
 			if (expression.substring(expression.length()-2).equals(")*")) {
 				this.recursive = true;
 				expression = expression.substring(0, expression.length() - 1); // Se remueve el * final
-				this.childrenPos = childrenPos; // Se guarda la cantidad de expresiones dentro de la recursividad
 			} else {
 				this.recursive = false;
 			}
@@ -28,6 +27,7 @@ public class Expression {
 			this.recursive = false;
 		}
 		
+		this.childrenPos = childrenPos; // Se guarda la cantidad de expresiones dentro de la recursividad
 		// Se remueven parentesis
 		expression = expression.replace("(", "");
 		expression = expression.replace(")", "");

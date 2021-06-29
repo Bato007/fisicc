@@ -141,13 +141,9 @@ public class AFD {
 						for (Integer estadoActual : matrix.get(estado)) {
 							temp.add(estadoActual); // EJ. 1, 2, 3, 4, 6
 						}
-
-						if (matrix.get(estado).size() == 0 && !temp.contains(expressionPositions.size())) {
-							temp.add(expressionPositions.size()); // Se agrega un 6 si hay #
-						}
 					}
 				}
-				
+
 				if (evaluatePath(finalStates.get("A"), temp, letraAbc)) {
 					// Evaluamos si la cadena aceptada ya existe en estados finales
 					// Si no existe, asignamos la letra y el valor del array
@@ -233,10 +229,11 @@ public class AFD {
 	// Generar txt
 	private void generarTxt(String nombreTxt) {
 		try {
-			
+			/*
 			System.out.println(finalADF);
 			System.out.println(matrix);
 			System.out.println(finalStates);
+			*/
 			
 			// Se crea el archivo
 			FileWriter myWriter = new FileWriter(nombreTxt);
