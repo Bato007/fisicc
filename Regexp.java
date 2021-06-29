@@ -25,7 +25,7 @@ public class Regexp {
     Eval eval = new Eval(list);
     boolean pp = eval.validate("bbabb");
     System.out.println(pp);
-    // AFD afd = new AFD(list, alphabet, grafo.getRelations(), "prueba.txt");
+    AFD afd = new AFD(list, alphabet, grafo.getRelations(), "prueba.txt");
     // AFDmin afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(),
     // afd.getMatrix());
 

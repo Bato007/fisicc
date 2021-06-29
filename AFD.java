@@ -12,6 +12,7 @@ public class AFD {
 	private ArrayList<Expression> expressions;
 	private String[] alphabet;
 	private HashMap<Integer, String> expressionPositions = new HashMap<Integer, String>();
+	Eval eval;
 	// Estados
 	private HashMap<String, ArrayList<Integer>> finalStates = new HashMap<String, ArrayList<Integer>>();
 	// Letra
@@ -21,6 +22,7 @@ public class AFD {
 
 	// Se crea la tabla segun el grafo
 	public AFD(ArrayList<Expression> list, String[] alphabet, ArrayList<Node> grafo, String nombreTxt) {
+		this.eval = new Eval(list);
 		this.expressions = list;
 		this.alphabet = alphabet;
 
@@ -186,49 +188,40 @@ public class AFD {
 
 	// Evaluar la cuerda con el camino obtenido
 	private Boolean evaluatePath(ArrayList<Integer> startingPath, ArrayList<Integer> path, String actualLetter) {
-		ArrayList<Integer> temp2 = new ArrayList<Integer>(path);
-
-		// El path inicial siempre será tomado en cuenta
-		for (Integer alreadyEvaluated : startingPath ) {
-			temp2.remove(alreadyEvaluated);
-		}
-
 		String cadena = "";
-		// Evaluamos lo restante del path
-		for (int i=0; i<temp2.size(); i++) {
-			cadena += expressionPositions.get(temp2.get(i)); // Se obtiene la letra del estado
+		// Por cada expresion
+		int posActual = 0;
+		for (Expression expression : expressions) {
+			// Si la expresion contiene un or (+)
+			// Por cada letra en la expresion
+			for (int i = 0; i < expression.getValue().length(); i++) {
+				// Si el caracter es igual a la letra del alfabeto actual
+				// Y, el caracter es parte del path, se agrega a la cadena
+				String letraEnExpresion = Character.toString(expression.getValue().charAt(i));
+
+				if (!letraEnExpresion.equals("+")) {
+					posActual++;
+				}
+
+				if (letraEnExpresion.equals(actualLetter) && path.contains(posActual)) {
+					// Se agrega esa letra a la cadena a evaluar
+					cadena += letraEnExpresion;
+				}
+			}
 		}
 
-		/*		
-		if (cadena.contains("#") || cadena.length() == 1 ) {
-			// La cadena temporal es aceptada si llega al final
-			// La cadena temporal es aceptada si solo tiene longitud 1
-			
-			try {
-				if (cadena.substring(0, cadena.length() - 1).equals(actualLetter)) {
-					return true;
-	 			}
-			} catch (Exception e) {}
-			
-			try {
-				if (cadena.substring(0, cadena.length()).equals(actualLetter)) {
-					return true;
-	 			}
-			} catch (Exception e) {}
-
-			// La cadena termina con la letra del alfabeto una antes de ella
-			// La cadena termina con la letra del alfabeto
+		if (eval.validate(cadena)) {
 			return true;
 		} else {
-			// Si la cadena no fue aceptada anteriormente, es false
 			return false;
-		}*/
-		return true;
+		}
 	} 
 
 	// Generar txt
 	private void generarTxt(String nombreTxt) {
 		try {
+			System.out.println(finalStates);
+
 			// Se crea el archivo
 			FileWriter myWriter = new FileWriter(nombreTxt);
 		
