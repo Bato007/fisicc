@@ -154,13 +154,13 @@ public class Graph {
 
     } // ---------------------------------------------------------- NODES
 
-    for (Node node : states) {
-      System.out.println("-----------" + node.getState());
-      for (Edge edge : node.getEdges()) {
-        System.out.print(edge.value);
-        System.out.println(" -> " + edge.finish.state + "");
-      }
-    }
+    // for (Node node : states) {
+    // System.out.println("-----------" + node.getState());
+    // for (Edge edge : node.getEdges()) {
+    // System.out.print(edge.value);
+    // System.out.println(" -> " + edge.finish.state + "");
+    // }
+    // }
   }
 
   public ArrayList<Node> getRelations() {
