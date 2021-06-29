@@ -19,14 +19,13 @@ public class AFDmin {
 
 	public AFDmin(HashMap<String, ArrayList<String>> finalAFD2, String[] alphabet,
 		HashMap<String, ArrayList<Integer>> finalStatesAFD2, HashMap<Integer, ArrayList<Integer>> matrix) {
+		/*
 		this.finalStatesAFD = finalStatesAFD2;
 		this.finalAFD = finalAFD2;
 		this.matrix = matrix;
 		this.alphabet = alphabet;
-
-		System.out.println(finalAFD);
-
-		/*
+		*/
+		
 		////EN LO QUE FUNCIONA LO DE VERIFICAR CADENAS////
 		ArrayList<String> paths = new ArrayList<>(Arrays.asList("aB", "bC"));
 		this.finalAFD.put("A", paths);
@@ -42,7 +41,7 @@ public class AFDmin {
 		finalStateTemp = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
 		this.finalStatesAFD.put("C", finalStateTemp);
 		//////////////////////////////////////////////////
-		*/
+		
 		ArrayList<String> finalStates = new ArrayList<String>();
 		ArrayList<String> noFinalStates = new ArrayList<String>();
 		// Separo finales y no finales
