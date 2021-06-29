@@ -72,6 +72,7 @@ public class Eval {
         tempIndex = validate.indexOf(recurs[i], startIndex);
         if (tempIndex == -1) {
           index++;
+          added = true;
           break;
         } else {
           startIndex = tempIndex;
@@ -81,6 +82,7 @@ public class Eval {
       if (length == (valIndex + 1) && !infinite && !added) {
         temp1 = recurs[recurs.length - 1];
         temp2 = validate.substring(validate.length() - temp1.length());
+
         if (!temp1.equals(temp2)) {
           index++;
           continue;
@@ -92,7 +94,6 @@ public class Eval {
         index = 0;
         valIndex++;
       }
-
       // Es porque paso todas las pruebas
       if (length == valIndex) {
         if (infinite) {

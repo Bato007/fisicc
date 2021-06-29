@@ -23,7 +23,7 @@ public class Regexp {
     grafo.relate();
 
     Eval eval = new Eval(list);
-    boolean pp = eval.validate("bbabb");
+    boolean pp = eval.validate("abbbbbabb");
     System.out.println(pp);
     AFD afd = new AFD(list, alphabet, grafo.getRelations(), "prueba.txt");
     // AFDmin afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(),
