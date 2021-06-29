@@ -125,7 +125,7 @@ public class AFDmin {
 
 		// Se crean particiones de manera recursiva hasta que sean distintas al pasado
 		if (!copiaParticiones.equals(particiones)) {
-			System.out.println("PARTICIONES " + copiaParticiones);
+			// System.out.println("PARTICIONES " + copiaParticiones);
 			particiones = copiaParticiones;
 			recursivePartition(0);
 		}
@@ -134,6 +134,11 @@ public class AFDmin {
 	// Genera el txt
 	private void generarTxt(String nombreTxt) {
 		try {
+			/*
+			System.out.println("Caminos " + matrixAFDmin);
+			System.out.println("Particiones " + particiones);
+			*/
+
 			// Se crea el archivo
 			FileWriter myWriter = new FileWriter(nombreTxt);
 		
@@ -144,12 +149,7 @@ public class AFDmin {
 			myWriter.write(estados); // Cantidad de estados
 
 			// El estado final es el final de las particiones
-			String estadoFinal = "\n";
-			for (String finales : particiones.get(particiones.size())) {
-				int pos =  (int)finales.charAt(0)-64;
-				estadoFinal += pos + ",";
-			}
-			estadoFinal = estadoFinal.substring(0, estadoFinal.length() - 1); // Remuevo ultima coma
+			String estadoFinal = "\n"+particiones.size();
 			myWriter.write(estadoFinal); // Estado final
 
 			// Escribimos las transiciones
@@ -160,6 +160,8 @@ public class AFDmin {
 						// Se convierte de letra a num
 						int pos = matrixAFDmin.get(letra).get(i); // Matriz de 0 es a, 1 es b...
 						transiciones += pos + ",";	
+						estadoFinal = "\n"+numParticion;
+						break;
 					}
 				}
 				transiciones = transiciones.substring(0, transiciones.length() - 1); // Remuevo ultima coma
@@ -171,22 +173,4 @@ public class AFDmin {
       		e.printStackTrace(); // Por si hay error
     	}
 	}
-
-
-	// GETTERS
-	public HashMap<Integer, ArrayList<ArrayList<String>>> getParticiones() {
-		HashMap<Integer, ArrayList<ArrayList<String>>> particionTemporal = new HashMap<Integer, ArrayList<ArrayList<String>>>();
-		ArrayList<ArrayList<String>> conjuntoTemp;
-
-		for (Integer particion: particiones.keySet()) {
-			conjuntoTemp = new ArrayList<ArrayList<String>>();
-			for (String letra : particiones.get(particion)) {
-				conjuntoTemp.add(finalAFD.get(letra)); // Obtengo los caminos		
-			}
-			particionTemporal.put(particion, conjuntoTemp);
-		}
-
-		return particionTemporal;
-	}
-
 }

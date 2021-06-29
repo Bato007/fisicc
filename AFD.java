@@ -142,8 +142,8 @@ public class AFD {
 							temp.add(estadoActual); // EJ. 1, 2, 3, 4, 6
 						}
 
-						if (matrix.get(estado).size() == 0 && !temp.contains(6)) {
-							temp.add(6); // Se agrega un 6 si hay #
+						if (matrix.get(estado).size() == 0 && !temp.contains(expressionPositions.size())) {
+							temp.add(expressionPositions.size()); // Se agrega un 6 si hay #
 						}
 					}
 				}
@@ -188,25 +188,38 @@ public class AFD {
 
 	// Evaluar la cuerda con el camino obtenido
 	private Boolean evaluatePath(ArrayList<Integer> startingPath, ArrayList<Integer> path, String actualLetter) {
+		// System.out.println("Path " + path);
 		String cadena = "";
 		// Por cada expresion
 		int posActual = 0;
 		for (Expression expression : expressions) {
-			// Si la expresion contiene un or (+)
-			// Por cada letra en la expresion
-			for (int i = 0; i < expression.getValue().length(); i++) {
-				// Si el caracter es igual a la letra del alfabeto actual
-				// Y, el caracter es parte del path, se agrega a la cadena
-				String letraEnExpresion = Character.toString(expression.getValue().charAt(i));
-
-				if (!letraEnExpresion.equals("+")) {
-					posActual++;
+			// Si la expresion es recursiva, se ignora por completo pero se toma su posicion
+			if (expression.getRecursive()) {
+				for (char ch: expression.getValue().toCharArray()) {	
+					String letraEnExpresion = Character.toString(ch);			
+					if (!letraEnExpresion.equals("+")) {
+						posActual++;
+					}
 				}
-
-				if (letraEnExpresion.equals(actualLetter) && path.contains(posActual)) {
-					// Se agrega esa letra a la cadena a evaluar
-					cadena += letraEnExpresion;
-				}
+			} else if (expression.getValue().contains("+")) {
+				// Si hay un + en la expresion, se toma solo una de la letras de a los lados EJ. a+bb
+				// Se parte la expresion antes del signo y luego del signo
+				int i = expression.getValue().indexOf("+");
+				String ladoIzq = expression.getValue().substring(0, i); // EJ. a
+				String ladoDer = expression.getValue().substring(i+1, expression.getValue().length()); //EJ. bb
+				
+				// Si la ultima letra es igual a la buscada actualmente
+				String lastLetter = Character.toString(ladoIzq.charAt(ladoIzq.length()-1));
+				if (lastLetter.equals(actualLetter)) {
+					cadena += ladoIzq;
+					posActual += ladoIzq.length();
+				} else {
+					cadena += ladoDer;
+					posActual += ladoDer.length();
+				}				
+			} else if (!expression.getValue().equals("#")){
+				// Es obligatorio en la cadena
+				cadena += expression.getValue(); 
 			}
 		}
 
@@ -220,6 +233,11 @@ public class AFD {
 	// Generar txt
 	private void generarTxt(String nombreTxt) {
 		try {
+			
+			System.out.println(finalADF);
+			System.out.println(matrix);
+			System.out.println(finalStates);
+			
 			// Se crea el archivo
 			FileWriter myWriter = new FileWriter(nombreTxt);
 		
@@ -232,7 +250,6 @@ public class AFD {
 			// El estado final es el que contenga el #
 			String estadoFinal = "\n";
 			for (String finales : finalStates.keySet()) {
-				// El numero del estado final es el tamano de la matriz + 1
 				if (finalStates.get(finales).contains(matrix.size())) {
 					int pos =  (int)finales.charAt(0)-64;
 					estadoFinal += pos + ",";

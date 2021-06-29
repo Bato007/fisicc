@@ -11,6 +11,7 @@ public class RegexpFunctions {
 			Scanner r = new Scanner(new File("expresion.rgx")); 
 			while (r.hasNextLine()) {
 				String line = r.nextLine(); // Mientras hayan lineas por leer se meten a la variable line
+				// line = converseExpression(line);
 
 				if (line.contains(",")) { // Si la linea contiene una coma
 					// Es el alfabeto
@@ -24,6 +25,25 @@ public class RegexpFunctions {
 		} catch (Exception e) { // Se muestra la razon de error por la que no se encuentra el doc
 			e.printStackTrace();
 		}
+	}
+
+	// Para mantener consistencia en el programa, se pasan de numeros a letras
+	// EJ. 0 -> a
+	private String converseExpression(String expression) {
+		String regex = "[0-9]+";
+		String expresionTemporal = "";
+
+		for (char ch : expression.toCharArray()) {
+			if (Character.toString(ch).matches(regex)) {
+				int num = Character.getNumericValue(ch)+1;
+				String letraActual = String.valueOf((char)(num + 64)); 
+				expresionTemporal += letraActual.toLowerCase();
+			} else {
+				expresionTemporal += Character.toString(ch);
+			}
+		}
+
+		return expresionTemporal;
 	}
 
 	/**
@@ -87,14 +107,9 @@ public class RegexpFunctions {
 			}
 		}
 
-		expression = "";
 		// Se termina agregando el final de la expresion
-		for (int i=0; i<split_expression.size(); i++) {
-			expression += split_expression.get(i);
-		}
-
-		if (split_expression.size() != 0) {
-			splitExpression.add(new Expression(expression, 0));
+		for (String expresionFija : split_expression) {
+			splitExpression.add(new Expression(expresionFija, 0));
 		}
 	}
 
@@ -174,8 +189,8 @@ public class RegexpFunctions {
     		System.out.println(splitExpression.get(i).getValue() + " " +
     		splitExpression.get(i).getChildenPos() + " " +
     		splitExpression.get(i).getRecursive());
-    	}
-    	*/
+    	}*/
+    	
     	return splitExpression;
 	}
 }
