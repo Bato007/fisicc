@@ -26,10 +26,10 @@ public class Regexp {
     boolean pp = eval.validate("abbbbbabb");
     System.out.println(pp);
     AFD afd = new AFD(list, alphabet, grafo.getRelations(), "prueba.txt");
-    // AFDmin afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(),
-    // afd.getMatrix());
+    AFDmin afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(), afd.getMatrix());
 
-    // AFD afd = new AFD(list, alphabet, grafo.getRelations());
+    afdMin.getParticiones(); // Para el gld
+
     /*
      * // Ahora se instancia try { String response = ""; switch (flag) { case
      * "-afd": Gld afd = new Gld(path); response = afd.operate(output); break; case

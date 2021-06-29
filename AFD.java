@@ -220,8 +220,6 @@ public class AFD {
 	// Generar txt
 	private void generarTxt(String nombreTxt) {
 		try {
-			System.out.println(finalStates);
-
 			// Se crea el archivo
 			FileWriter myWriter = new FileWriter(nombreTxt);
 		

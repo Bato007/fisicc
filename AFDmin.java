@@ -19,13 +19,14 @@ public class AFDmin {
 
 	public AFDmin(HashMap<String, ArrayList<String>> finalAFD2, String[] alphabet,
 		HashMap<String, ArrayList<Integer>> finalStatesAFD2, HashMap<Integer, ArrayList<Integer>> matrix) {
-		/*
 		this.finalStatesAFD = finalStatesAFD2;
 		this.finalAFD = finalAFD2;
 		this.matrix = matrix;
-		*/
 		this.alphabet = alphabet;
 
+		System.out.println(finalAFD);
+
+		/*
 		////EN LO QUE FUNCIONA LO DE VERIFICAR CADENAS////
 		ArrayList<String> paths = new ArrayList<>(Arrays.asList("aB", "bC"));
 		this.finalAFD.put("A", paths);
@@ -41,7 +42,7 @@ public class AFDmin {
 		finalStateTemp = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
 		this.finalStatesAFD.put("C", finalStateTemp);
 		//////////////////////////////////////////////////
-
+		*/
 		ArrayList<String> finalStates = new ArrayList<String>();
 		ArrayList<String> noFinalStates = new ArrayList<String>();
 		// Separo finales y no finales
@@ -126,6 +127,7 @@ public class AFDmin {
 
 		// Se crean particiones de manera recursiva hasta que sean distintas al pasado
 		if (!copiaParticiones.equals(particiones)) {
+			System.out.println("PARTICIONES " + copiaParticiones);
 			particiones = copiaParticiones;
 			recursivePartition(0);
 		}
@@ -170,6 +172,23 @@ public class AFDmin {
 		} catch (IOException e) {
       		e.printStackTrace(); // Por si hay error
     	}
+	}
+
+
+	// GETTERS
+	public HashMap<Integer, ArrayList<ArrayList<String>>> getParticiones() {
+		HashMap<Integer, ArrayList<ArrayList<String>>> particionTemporal = new HashMap<Integer, ArrayList<ArrayList<String>>>();
+		ArrayList<ArrayList<String>> conjuntoTemp;
+
+		for (Integer particion: particiones.keySet()) {
+			conjuntoTemp = new ArrayList<ArrayList<String>>();
+			for (String letra : particiones.get(particion)) {
+				conjuntoTemp.add(finalAFD.get(letra)); // Obtengo los caminos		
+			}
+			particionTemporal.put(particion, conjuntoTemp);
+		}
+
+		return particionTemporal;
 	}
 
 }
