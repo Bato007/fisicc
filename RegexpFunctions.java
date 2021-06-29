@@ -69,13 +69,18 @@ public class RegexpFunctions {
 							completeParenthesis += split_expression.get(k);
 						}
 
+						String temporal = "";
+						for (char ch: completeParenthesis.toCharArray()) {
+							if (!Character.toString(ch).equals("+")) {
+								temporal += Character.toString(ch);
+							}
+						}
 
 						// Creo un objeto tipo Expression
-						//System.out.println("Entra con " + completeParenthesis + " y child " + childrenPos);
-						if (!completeParenthesis.equals("()") && !completeParenthesis.equals("(++++)")) {
+						if (!completeParenthesis.equals("()") && !temporal.equals("()")) {
 							try {
-								// Si hay un * luego del parentesis
-								if (split_expression.get(j+1).equals("*") || split_expression.get(j+1).equals(")")) {
+								// Si hay un ) luego del parentesis
+								if (split_expression.get(j+1).equals(")")) {
 									// Significa que la expresion tiene al menos un elemento adentro
 									splitExpression.add(new Expression(completeParenthesis, childrenPos));
 									childrenPos = 0;
@@ -121,7 +126,7 @@ public class RegexpFunctions {
 		int finalExpression;
 
 		// Se pasa elemento por elemento
-		for (int i=0; i<splitExpression.size(); i++) {
+		for (int i=splitExpression.size()-1; i>=0; i--) {
 			String expresionActual = splitExpression.get(i).getValue();
 			String firstChar = String.valueOf(splitExpression.get(i).getValue().charAt(0));
 
@@ -178,8 +183,7 @@ public class RegexpFunctions {
 
 			for (int j=0; j<orderedList.size(); j++) {
 				if (orderedList.get(j) == actualSearch) { // Se obtiene el verdadero orden de la exp.
-					tempExpressionArray.set(j, splitExpression.get(i)); // Intercambiamos valor por objeto
-
+					tempExpressionArray.set(j, splitExpression.get(splitExpression.size()-1-i)); // Intercambiamos valor por objeto
 					break;
 				}
 			}
@@ -195,12 +199,12 @@ public class RegexpFunctions {
 
 	// Get de la expresion
 	public ArrayList<Expression> getExpresion() {
-		
+		/*
     	for (int i=0; i<splitExpression.size(); i++) {
     		System.out.println(splitExpression.get(i).getValue() + " " +
     		splitExpression.get(i).getChildenPos() + " " +
     		splitExpression.get(i).getRecursive());
-    	}
+    	}*/
     	
     	return splitExpression;
 	}
