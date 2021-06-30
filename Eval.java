@@ -66,7 +66,7 @@ public class Eval {
       // Se verifica si hay opciones todavia
       recurs = arrChar.split("#");
 
-      // Ahora se verifica si se encuentran en la expresion
+      // Ahora se verifica si se encuentran en la expresion aa
       tempIndex = -1;
       for (int i = 0; i < recurs.length; i++) {
         tempIndex = validate.indexOf(recurs[i], startIndex);

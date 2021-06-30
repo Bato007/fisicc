@@ -52,115 +52,111 @@ public class Graph {
     // Se para el resto de estanos menos el final
     expressions.add(new Expression("#", 0));
 
-    for (int i = 0; i < numbStates - 1; i++) { // --------------------- NODES
-      tempNode = states.get(i);
-      tempState = stateCount.get(startIn);
-      passed = 0;
+    try {
+      for (int i = 0; i < numbStates - 1; i++) { // --------------------- NODES
+        tempNode = states.get(i);
+        tempState = stateCount.get(startIn);
+        passed = 0;
 
-      // Las expresiones del array y en donde se hace toda la magia
-      for (int j = startIn; j < expressions.size(); j++) { // ------- EXPRESION
-        Expression expression = expressions.get(j);
-        String data = expression.getValue();
-        boolean isRecursive = expression.getRecursive();
-        String[] noOrs = data.split("\\+");
+        // Las expresiones del array y en donde se hace toda la magia
+        for (int j = startIn; j < expressions.size(); j++) { // ------- EXPRESION
+          Expression expression = expressions.get(j);
+          String data = expression.getValue();
+          String[] noOrs = data.split("\\+");
+          boolean isRecursive = expression.getRecursive();
 
-        // ['ab', 'b']
-        for (int k = 0; k < noOrs.length; k++) { // --------------- SEPARADO
-          aux = noOrs[k];
+          // ['ab', 'b']
+          for (int k = 0; k < noOrs.length; k++) { // --------------- SEPARADO
+            aux = noOrs[k];
 
-          // 'ab'
-          for (int h = 0; h < aux.length(); h++) { // ------------ CARACTERES
-            caracter = String.valueOf(aux.charAt(h)); // 'a'
-            accepted = Arrays.stream(alphabet).anyMatch(caracter::equals);
+            // 'ab'
+            for (int h = 0; h < aux.length(); h++) { // ------------ CARACTERES
+              caracter = String.valueOf(aux.charAt(h)); // 'a'
+              accepted = Arrays.stream(alphabet).anyMatch(caracter::equals);
 
-            // Verificando si es un estado
-            if (accepted) {
-              tempState++;
-            }
+              // Verificando si es un estado
+              if (accepted) {
+                tempState++;
+              }
 
-            // Se verifica si no puede ir al anterior
-            if (!isRecursive) {
-              if (tempState < tempNode.getState()) {
-                continue;
-              } else if (passed < 1) { // Cuando son locales
-                if (noOrs[k].length() == 1 || (isFirst && (h == (aux.length() - 1)))) {
-                  canContinue = true;
-                  break;
-                } else {
-                  // Se mira si el siguiente es * o una letra
-                  tempCaracter = String.valueOf(aux.charAt(h + 1));
-                  if (!tempCaracter.equals("*")) {
-                    tempEdge = new Edge(states.get(tempState), tempCaracter);
-                    tempNode.addEdge(tempEdge);
+              // Se verifica si no puede ir al anterior
+              if (!isRecursive) {
+                if (tempState < tempNode.getState()) {
+                  continue;
+                } else if (passed < 1) { // Cuando son locales
+                  if (noOrs[k].length() == 1 || (isFirst && (h == (aux.length() - 1)))) {
+                    canContinue = true;
                     break;
+                  } else {
+                    // Se mira si el siguiente es * o una letra
+                    tempCaracter = String.valueOf(aux.charAt(h + 1));
+                    if (!tempCaracter.equals("*")) {
+                      tempEdge = new Edge(states.get(tempState), tempCaracter);
+                      tempNode.addEdge(tempEdge);
+                      break;
+                    }
+                  }
+                } else if (passed >= 1) { // Si no es local
+                  if (noOrs[k].length() == 1) {
+                    canContinue = false;
                   }
                 }
-              } else if (passed >= 1) { // Si no es local
-                if (noOrs[k].length() == 1) {
-                  canContinue = false;
+              }
+
+              // Deja agregar
+              if (isFirst) {
+                // Si es el estado final se le coloca de uan
+                if (caracter.equals("#")) {
+                  tempEdge = new Edge(states.get(numbStates - 1), caracter);
+                  tempNode.makeEnd();
+                  tempNode.addEdge(tempEdge);
+                  break;
+                }
+
+                isFirst = false;
+                canAdd = true;
+              } else {
+                if (caracter.equals("*")) {
+                  canAdd = true;
+                  continue;
+                } else {
+                  canAdd = false;
                 }
               }
-            }
 
-            // Deja agregar
-            if (isFirst) {
-              // Si es el estado final se le coloca de uan
-              if (caracter.equals("#")) {
-                tempEdge = new Edge(states.get(numbStates - 1), caracter);
-                tempNode.makeEnd();
+              // Verificando si se agrega o no
+              if (canAdd) {
+                tempEdge = new Edge(states.get(tempState - 1), caracter);
                 tempNode.addEdge(tempEdge);
-                break;
-              }
-
-              isFirst = false;
-              canAdd = true;
-            } else {
-              // Se verifica si puede continuar
-              if (caracter.equals("*")) {
-                canAdd = true;
-                continue;
-              } else {
                 canAdd = false;
               }
 
+            } // --------------------------------------- CARACTERES
+
+            isFirst = true;
+            if (canContinue) {
+              tempState = stateCount.get(startIn + 1);
+              break;
             }
 
-            // Verificando si se agrega o no
-            if (canAdd) {
-              tempEdge = new Edge(states.get(tempState - 1), caracter);
-              tempNode.addEdge(tempEdge);
-              canAdd = false;
-            }
+          } // ---------------------------------------------SEPARADO
 
-          } // --------------------------------------- CARACTERES
-
-          isFirst = true;
-          if (canContinue) {
+          passed++;
+          if (!canContinue && !isRecursive) {
             break;
           }
+          canContinue = false;
 
-        } // ---------------------------------------------SEPARADO
+        } // ------------------------------------------------- EXPRESION
 
-        passed++;
-        if (!canContinue && !isRecursive) {
-          break;
-        }
-        canContinue = false;
+        if (tempNode.getState() == stateCount.get(startIn + 1))
+          startIn++;
 
-      } // ------------------------------------------------- EXPRESION
+      } // ---------------------------------------------------------- NODES
+    } catch (Exception e) {
+      // TODO: handle exception
+    }
 
-      if (tempNode.getState() == stateCount.get(startIn + 1))
-        startIn++;
-
-    } // ---------------------------------------------------------- NODES
-
-    // for (Node node : states) {
-    // System.out.println("-----------" + node.getState());
-    // for (Edge edge : node.getEdges()) {
-    // System.out.print(edge.value);
-    // System.out.println(" -> " + edge.finish.state + "");
-    // }
-    // }
   }
 
   public ArrayList<Node> getRelations() {

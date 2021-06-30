@@ -16,7 +16,7 @@ public class Regexp {
 
     AFD afd;
     AFDmin afdMin;
-    GLD gld;
+    Gld gld;
     Eval eval;
     // Objeto para analizar el rgx
     if (flag.compareTo("-eval") != 0) {
@@ -39,10 +39,10 @@ public class Regexp {
         break;
       case "-min":
         afd = new AFD(list, alphabet, grafo.getRelations(), output);
-        afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(), afd.getMatrix());
+        afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(), afd.getMatrix(), output);
         break;
       case "-gld":
-        gld = new GLD(list, grafo.getRelations(), alphabet);
+        gld = new Gld(list, grafo.getRelations(), alphabet);
         gld.makeText(output);
         break;
       case "-eval":

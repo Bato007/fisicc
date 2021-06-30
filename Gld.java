@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class GLD {
+public class Gld {
 
   private ArrayList<Relation> relations = new ArrayList<>();
   private ArrayList<String> notTerminal = new ArrayList<>();
@@ -11,7 +11,7 @@ public class GLD {
   private String[] alphabet;
   private int arbIndex = 0;
 
-  public GLD(ArrayList<Expression> expressions, ArrayList<Node> nodes, String[] alphabet) {
+  public Gld(ArrayList<Expression> expressions, ArrayList<Node> nodes, String[] alphabet) {
     String value, caracter;
     Expression expression;
     Relation tempRelation;
@@ -24,7 +24,7 @@ public class GLD {
       value = expression.getValue();
       isRecursive = expression.getRecursive();
 
-      for (int j = 0; j < value.length(); j++) {
+      for (int j = 0; j < value.length(); j++) { // a+b
         caracter = String.valueOf(value.charAt(j));
         contains = Arrays.stream(alphabet).anyMatch(caracter::equals); // Verificando en el alfabeto
         if (contains) { // Si es una a o b

@@ -18,29 +18,13 @@ public class AFDmin {
 
 
 	public AFDmin(HashMap<String, ArrayList<String>> finalAFD2, String[] alphabet,
-		HashMap<String, ArrayList<Integer>> finalStatesAFD2, HashMap<Integer, ArrayList<Integer>> matrix) {
+        HashMap<String, ArrayList<Integer>> finalStatesAFD2, HashMap<Integer, ArrayList<Integer>> matrix,
+        String nombreTxt) {
 		this.finalStatesAFD = finalStatesAFD2;
 		this.finalAFD = finalAFD2;
 		this.matrix = matrix;
 		this.alphabet = alphabet;
-		
-		/*
-		////EN LO QUE FUNCIONA LO DE VERIFICAR CADENAS////
-		ArrayList<String> paths = new ArrayList<>(Arrays.asList("aB", "bC"));
-		this.finalAFD.put("A", paths);
-		this.finalAFD.put("B", paths);
-		paths = new ArrayList<>(Arrays.asList("aB", "bB"));
-		this.finalAFD.put("C", paths);
 
-		// A: 1, 2, 3, 4 B: 1, 2, 3, 4, 6 C: 1, 2, 3, 4, 5
-		ArrayList<Integer> finalStateTemp = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
-		this.finalStatesAFD.put("A", finalStateTemp);
-		finalStateTemp = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 6));
-		this.finalStatesAFD.put("B", finalStateTemp);
-		finalStateTemp = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
-		this.finalStatesAFD.put("C", finalStateTemp);
-		//////////////////////////////////////////////////
-		*/
 		ArrayList<String> finalStates = new ArrayList<String>();
 		ArrayList<String> noFinalStates = new ArrayList<String>();
 		// Separo finales y no finales
@@ -60,7 +44,7 @@ public class AFDmin {
 		generateMatrix(); // Generamos matriz
 		recursivePartition(0); // Generamos particiones
 		generateMatrix(); // Generamos matriz
-		generarTxt("pruebaMin.txt");
+        generarTxt(nombreTxt);
 	}
 
 	// Se genera la matriz de numeros EJ. A=[2, 1], B=[2, 1], C=[2, 2]
