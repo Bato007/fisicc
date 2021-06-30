@@ -144,32 +144,31 @@ public class AFD {
 					}
 				}
 
-				if (evaluatePath(finalStates.get("A"), temp, letraAbc)) {
-					// Evaluamos si la cadena aceptada ya existe en estados finales
-					// Si no existe, asignamos la letra y el valor del array
-					if (!finalStates.containsValue(temp)) {
-						letter += 1;
-						String nombreActualTemp = String.valueOf((char)(letter + 64)); // x cantidad de conjuntos	
-						finalStates.put(nombreActualTemp, temp);
-					}
+				// Evaluamos si la cadena aceptada ya existe en estados finales
+				// Si no existe, asignamos la letra y el valor del array
+				if (!finalStates.containsValue(temp)) {
+					letter += 1;
+					String nombreActualTemp = String.valueOf((char)(letter + 64)); // x cantidad de conjuntos	
+					finalStates.put(nombreActualTemp, temp);
+				}
 				
-					// Se busca la llave del path que corresponde
-					for(Entry<String, ArrayList<Integer>> entry: finalStates.entrySet()) {
-						if (entry.getValue().equals(temp)) { // Si es igual al temporal
-							String caminoA = letraAbc + entry.getKey(); // Se obtiene la letra del alfabeto + llave EJ. aB 
+				// Se busca la llave del path que corresponde
+				for(Entry<String, ArrayList<Integer>> entry: finalStates.entrySet()) {
+					if (entry.getValue().equals(temp)) { // Si es igual al temporal
+						String caminoA = letraAbc + entry.getKey(); // Se obtiene la letra del alfabeto + llave EJ. aB 
 
-							if (finalADF.containsKey(nombreActual)) { // Si existe
-								finalADF.get(nombreActual).add(caminoA); // Se agrega
-							} else {
-								ArrayList<String> temp2 = new ArrayList<String>(); // Si no existe
-								temp2.add(caminoA);
-								finalADF.put(nombreActual, temp2); // Se crea
-							}
-
-							break;
+						if (finalADF.containsKey(nombreActual)) { // Si existe
+							finalADF.get(nombreActual).add(caminoA); // Se agrega
+						} else {
+							ArrayList<String> temp2 = new ArrayList<String>(); // Si no existe
+							temp2.add(caminoA);
+							finalADF.put(nombreActual, temp2); // Se crea
 						}
+
+						break;
 					}
 				}
+				
 				allTemp.add(temp);
 			}
 
@@ -181,50 +180,6 @@ public class AFD {
 
 		return allTemp;
 	}
-
-	// Evaluar la cuerda con el camino obtenido
-	private Boolean evaluatePath(ArrayList<Integer> startingPath, ArrayList<Integer> path, String actualLetter) {
-		// System.out.println("Path " + path);
-		String cadena = "";
-		// Por cada expresion
-		int posActual = 0;
-		for (Expression expression : expressions) {
-			// Si la expresion es recursiva, se ignora por completo pero se toma su posicion
-			if (expression.getRecursive()) {
-				for (char ch: expression.getValue().toCharArray()) {	
-					String letraEnExpresion = Character.toString(ch);			
-					if (!letraEnExpresion.equals("+")) {
-						posActual++;
-					}
-				}
-			} else if (expression.getValue().contains("+")) {
-				// Si hay un + en la expresion, se toma solo una de la letras de a los lados EJ. a+bb
-				// Se parte la expresion antes del signo y luego del signo
-				int i = expression.getValue().indexOf("+");
-				String ladoIzq = expression.getValue().substring(0, i); // EJ. a
-				String ladoDer = expression.getValue().substring(i+1, expression.getValue().length()); //EJ. bb
-				
-				// Si la ultima letra es igual a la buscada actualmente
-				String lastLetter = Character.toString(ladoIzq.charAt(ladoIzq.length()-1));
-				if (lastLetter.equals(actualLetter)) {
-					cadena += ladoIzq;
-					posActual += ladoIzq.length();
-				} else {
-					cadena += ladoDer;
-					posActual += ladoDer.length();
-				}				
-			} else if (!expression.getValue().equals("#")){
-				// Es obligatorio en la cadena
-				cadena += expression.getValue(); 
-			}
-		}
-
-		if (eval.validate(cadena)) {
-			return true;
-		} else {
-			return false;
-		}
-	} 
 
 	// Generar txt
 	private void generarTxt(String nombreTxt) {

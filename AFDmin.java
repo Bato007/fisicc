@@ -29,9 +29,8 @@ public class AFDmin {
 		ArrayList<String> noFinalStates = new ArrayList<String>();
 		// Separo finales y no finales
 		for (String posibleFinal : finalStatesAFD.keySet()) {
-			// El numero del estado final es el tamano de la matriz + 1
-			// if (finalStatesAFD.get(posibleFinal).contains(matrix.size())) {
-			if (finalStatesAFD.get(posibleFinal).contains(6)) {
+			// El numero del estado final es el tamano de la matriz
+			if (finalStatesAFD.get(posibleFinal).contains(matrix.size())) {
 				finalStates.add(posibleFinal);
 			} else {
 				noFinalStates.add(posibleFinal);

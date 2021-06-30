@@ -1,8 +1,0 @@
-A,B
-a,b
-A
-A->aA
-A->bA
-A->a
-A->bB
-B->b
