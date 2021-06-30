@@ -6,9 +6,9 @@ public class RegexpFunctions {
 	private ArrayList<Expression> splitExpression = new ArrayList<Expression>();
 	
 	// Se lee el txt .rgx
-	public void readTxt() {
+    public void readTxt(String textName) {
 		try {
-			Scanner r = new Scanner(new File("expresion.rgx")); 
+          Scanner r = new Scanner(new File(textName));
 			while (r.hasNextLine()) {
 				String line = r.nextLine(); // Mientras hayan lineas por leer se meten a la variable line
 				// line = converseExpression(line);

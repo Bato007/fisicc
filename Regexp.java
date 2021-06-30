@@ -1,42 +1,65 @@
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Scanner;
 
 public class Regexp {
   public static void main(String[] args) {
     // Argumentos que pasan de compilacion
-    /*
-     * String path = args[0]; String flag = args[1]; String output = "";
-     */
-    // Objeto para analizar el rgx
-    RegexpFunctions rgxFunctions = new RegexpFunctions();
+    String path = args[0];
+    String flag = args[1];
+    String output = "", expression, message;
+
+    Scanner input = new Scanner(System.in);
+    String[] alphabet;
+    ArrayList<Expression> list;
     Graph grafo;
+    RegexpFunctions rgxFunctions;
 
-    /*
-     * if (flag.compareTo("-eval") != 0) { output = args[2]; }
-     */
+    AFD afd;
+    AFDmin afdMin;
+    GLD gld;
+    Eval eval;
+    // Objeto para analizar el rgx
+    if (flag.compareTo("-eval") != 0) {
+      output = args[2];
+    }
 
-    rgxFunctions.readTxt();
-    ArrayList<Expression> list = rgxFunctions.getExpresion();
-    String[] alphabet = rgxFunctions.getAlfabeto();
+    // Leyendo el txt
+    rgxFunctions = new RegexpFunctions();
+    rgxFunctions.readTxt(path);
+    list = rgxFunctions.getExpresion();
+    alphabet = rgxFunctions.getAlfabeto();
 
+    // Generando relaciones
     grafo = new Graph(list, alphabet);
     grafo.relate();
 
-    Eval eval = new Eval(list);
-    boolean pp = eval.validate("aa");
-    System.out.println(pp);
-    AFD afd = new AFD(list, alphabet, grafo.getRelations(), "prueba.txt");
-    AFDmin afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(), afd.getMatrix());
+    switch (flag) {
+      case "-afd":
+        afd = new AFD(list, alphabet, grafo.getRelations(), output);
+        break;
+      case "-min":
+        afd = new AFD(list, alphabet, grafo.getRelations(), output);
+        afdMin = new AFDmin(afd.getFinalAFD(), alphabet, afd.getFinalStates(), afd.getMatrix());
+        break;
+      case "-gld":
+        gld = new GLD(list, grafo.getRelations(), alphabet);
+        gld.makeText(output);
+        break;
+      case "-eval":
+        eval = new Eval(list);
+        while (true) {
+          System.out.print("Ingrese la cadena a probar o 'exit' para salir: ");
+          expression = input.nextLine();
+          if (expression.compareTo("exit") == 0) {
+            break;
+          }
+          message = (eval.validate(expression)) ? "Cadena valida\n" : "Cadena Invalida\n";
+          System.out.println(message);
+        }
+        break;
+      default:
+        System.out.println("Operacion Invalida");
+    }
 
-    /*
-     * // Ahora se instancia try { String response = ""; switch (flag) { case
-     * "-afd": Gld afd = new Gld(path); response = afd.operate(output); break; case
-     * "-gld": Gld gld = new Gld(path); response = gld.operate(output); break; case
-     * "-min": Gld min = new Gld(path); response = min.operate(output); break;
-     * default: Gld eval = new Gld(path); response = eval.operate(output); break; }
-     * 
-     * System.out.println(response); } catch (Exception error) {
-     * System.out.println("Error inesperado"); }
-     */
   }
 }
